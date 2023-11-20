@@ -1,16 +1,22 @@
+
 import os
 import re
-import telegram
+import subprocess
+import requests
+import random
+import base64
+import string
+from urllib.parse import quote
+from urllib3 import disable_warnings
+from uuid import uuid4
+import logging
 from telegram.ext import Updater, MessageHandler, Filters, CallbackQueryHandler, CommandHandler
 from moviepy.editor import VideoFileClip
-import subprocess
-from uuid import uuid4
-from time import time
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from progressbar import ProgressBar, Bar, Percentage, ETA, FileTransferSpeed
 
 # Set the token for your Telegram bot
-TELEGRAM_BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')  # Use environment variable for sensitive information
 
 # Set up libtorrent for torrent downloading
 import libtorrent as lt
@@ -24,20 +30,25 @@ class Bot:
 
 # Define your authorized users' IDs
 AUTHORIZED_USERS = [123456789, 987654321]  # Replace with your actual user IDs
+SHORTENER = "https://atglinks.com/"
+SHORTENER_API = "498ee7efdd27b59fa6436070a5a3eb28d1a39e80"
 
 # Create an instance of the Bot class with your Telegram bot token and authorized users
 bot = Bot(TELEGRAM_BOT_TOKEN, AUTHORIZED_USERS)
+
+# Set up logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 # Function to check if the user is authorized
 def is_authorized(user_id):
     return user_id in bot.authorized_users
 
 # Function to download a torrent file using libtorrent
-def download_torrent(torrent_link):
+def download_torrent(torrent_link, save_path='./'):
     try:
         ses = lt.session()
         info = lt.torrent_info(torrent_link)
-        h = ses.add_torrent({'ti': info, 'save_path': './'})
+        h = ses.add_torrent({'ti': info, 'save_path': save_path})
 
         widgets = ['Downloading: ', Percentage(), ' ', Bar(marker='#', left='[', right=']'), ' ', ETA(), ' ', FileTransferSpeed()]
         pbar = ProgressBar(widgets=widgets)
@@ -49,10 +60,10 @@ def download_torrent(torrent_link):
 
             lt.sleep(1000)
 
-        return f"./{h.name()}/{h.name()}.mkv"
+        return os.path.join(save_path, h.name(), f"{h.name()}.mkv")
 
     except Exception as e:
-        print(f"Error downloading torrent: {e}")
+        logging.error(f"Error downloading torrent: {e}")
         return None
 
 # Function to convert a video file using ffmpeg
@@ -63,7 +74,7 @@ def convert_video(file_path, resolution):
         subprocess.call(command, shell=True)
         return output_file_path
     except Exception as e:
-        print(f"Error converting video: {e}")
+        logging.error(f"Error converting video: {e}")
         return None
 
 # Function to upload a file to Telegram chat
@@ -74,13 +85,18 @@ def upload_file(file_path, chat_id):
         return file_path
 
     except Exception as e:
-        print(f"Error uploading file: {e}")
+        logging.error(f"Error uploading file: {e}")
         return None
 
-# Function to shorten a URL
+def generate_random_string(length=8):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
+
 def short_url(longurl):
-    # Add your URL shortening logic here
-    # ...
+    disable_warnings()
+    random_string = generate_random_string()
+    short_url = f'{SHORTENER}{random_string}'
+    return requests.get(f'{short_url}api?api={SHORTENER_API}&url={longurl}&format=text').text
 
 # Function to check access based on tokens
 def checking_access(user_id, button=None):
@@ -89,7 +105,7 @@ def checking_access(user_id, button=None):
 
     if user_id not in bot.tokens:
         if button is None:
-            button = ButtonMaker()
+            button = ButtonMaker()  # Assuming ButtonMaker is defined elsewhere
         button.ubutton('Refresh Token', short_url(f'https://t.me/{bot_name}?start={uuid4()}'))
         return 'Invalid token, refresh your token and try again.', button
 
@@ -123,7 +139,7 @@ def lecomp(update, context):
     context.user_data['resolution_keyboard'] = resolution_keyboard
 
     update.message.reply_text('Please choose the desired encoding resolution:', reply_markup=reply_markup)
-
+    
 # Handler function for inline keyboard button callbacks
 def button(update, context):
     user_id = update.callback_query.from_user.id
