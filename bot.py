@@ -23,13 +23,6 @@ TELEGRAM_BOT_TOKEN = os.environ.get('6498059135:AAGIVa7OMfP4P4AxCcBV53dh-Z9zyWCj
 # Set up libtorrent for torrent downloading
 import libtorrent as lt
 
-class Bot:
-    def __init__(self, token, authorized_users):
-        self.updater = Updater(token=token, use_context=True)
-        self.dispatcher = self.updater.dispatcher
-        self.authorized_users = authorized_users
-        self.tokens = set()
-
 # Define your authorized users' IDs
 AUTHORIZED_USERS = [6748415360]  # Replace with your actual user IDs
 SHORTENER = "https://atglinks.com/"
