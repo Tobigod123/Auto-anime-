@@ -16,7 +16,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from progressbar import ProgressBar, Bar, Percentage, ETA, FileTransferSpeed
 
 # Set the token for your Telegram bot
-TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')  # Use environment variable for sensitive information
+TELEGRAM_BOT_TOKEN = os.environ.get('6498059135:AAGIVa7OMfP4P4AxCcBV53dh-Z9zyWCjqxQ')  # Use environment variable for sensitive information
 
 # Set up libtorrent for torrent downloading
 import libtorrent as lt
@@ -29,7 +29,7 @@ class Bot:
         self.tokens = set()
 
 # Define your authorized users' IDs
-AUTHORIZED_USERS = [123456789, 987654321]  # Replace with your actual user IDs
+AUTHORIZED_USERS = [6748415360]  # Replace with your actual user IDs
 SHORTENER = "https://atglinks.com/"
 SHORTENER_API = "498ee7efdd27b59fa6436070a5a3eb28d1a39e80"
 
