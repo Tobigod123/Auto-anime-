@@ -206,8 +206,8 @@ def leech_file(update, context):
 
     # Prompt the user to choose the desired encoding option
     context.bot.send_message(chat_id=update.message.chat_id,
-                             text='Please choose the resolution for encoding:',
-                             reply=                             markup=reply_markup)
+                         text='Please choose the resolution for encoding:',
+                         reply_markup=reply_markup)
 
 def encode_resolution(update, context):
     query = update.callback_query
