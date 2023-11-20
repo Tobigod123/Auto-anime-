@@ -12,7 +12,7 @@ from uuid import uuid4
 import logging
 from telegram import Update
 from telegram.ext import Updater, MessageHandler, CallbackQueryHandler, CommandHandler
-from telegram import Filters
+from telegram import *
 from moviepy.editor import VideoFileClip
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from progressbar import ProgressBar, Bar, Percentage, ETA, FileTransferSpeed
