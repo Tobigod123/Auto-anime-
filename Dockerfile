@@ -19,4 +19,4 @@ RUN pip install --upgrade pip \
 COPY . .
 
 # Run the bot
-CMD ["python", "your_bot_script.py"]
+CMD ["python", "bot.py"]
