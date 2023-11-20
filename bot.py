@@ -18,7 +18,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from progressbar import ProgressBar, Bar, Percentage, ETA, FileTransferSpeed
 
 # Set the token for your Telegram bot
-TELEGRAM_BOT_TOKEN = os.environ.get('6498059135:AAGIVa7OMfP4P4AxCcBV53dh-Z9zyWCjqxQ')  # Use environment variable for sensitive information
+TELEGRAM_BOT_TOKEN = os.environ.get('6498059135:AAEw4Vt4veJtIHOX2NOD-j0UsCD3zH_CyZQ')  # Use environment variable for sensitive information
 
 # Set up libtorrent for torrent downloading
 import libtorrent as lt
