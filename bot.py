@@ -10,7 +10,8 @@ from urllib.parse import quote
 from urllib3 import disable_warnings
 from uuid import uuid4
 import logging
-from telegram.ext import Updater, MessageHandler, Filters, CallbackQueryHandler, CommandHandler
+from telegram import Update
+from telegram.ext import Updater, MessageHandler, CallbackQueryHandler, CommandHandler, Filters
 from moviepy.editor import VideoFileClip
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from progressbar import ProgressBar, Bar, Percentage, ETA, FileTransferSpeed
